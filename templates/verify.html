@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Certificate Verification</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h2 class="text-success">
+                ✅ Certificate Verified
+            </h2>
+
+            <hr>
+
+            <h4>{{ student.name }}</h4>
+
+            <p><b>Internship ID:</b> {{ student.internship_id }}</p>
+
+            <p><b>Email:</b> {{ student.email }}</p>
+
+            <p><b>Role:</b> {{ student.role }}</p>
+
+            <p><b>Start Date:</b> {{ student.start_date }}</p>
+
+            <p><b>End Date:</b> {{ student.end_date }}</p>
+
+            <p><b>Status:</b> {{ student.status }}</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

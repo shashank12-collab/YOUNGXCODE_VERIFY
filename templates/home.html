@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YoungXcode Certificate Verification</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-5 text-center">
+
+    <h1>YoungXcode</h1>
+
+    <h3>Certificate Verification Portal</h3>
+
+    <p>Verify Internship & Training Certificates</p>
+
+    <form method="POST">
+    {% csrf_token %}
+
+    <input
+        type="text"
+        name="certificate_id"
+        class="form-control mb-3"
+        placeholder="Enter Certificate ID">
+
+    <button class="btn btn-primary">
+        Verify Certificate
+    </button>
+
+</form>
+
+{% if student %}
+
+<div class="card mt-4">
+    <div class="card-body">
+
+        <h3 class="text-success">
+            ✅ Certificate Verified
+        </h3>
+
+        <hr>
+
+        <p><strong>Name:</strong> {{ student.full_name }}</p>
+
+        <p><strong>Certificate ID:</strong> {{ student.certificate_id }}</p>
+
+        <p><strong>College:</strong> {{ student.college_name }}</p>
+
+        <p><strong>Course:</strong> {{ student.course_name }}</p>
+
+        <p><strong>Internship:</strong> {{ student.internship_domain }}</p>
+
+        <p><strong>Issue Date:</strong> {{ student.issue_date }}</p>
+
+        <p><strong>Status:</strong> {{ student.status }}</p>
+
+    </div>
+</div>
+
+{% endif %}
+
+{% if error %}
+
+<div class="alert alert-danger mt-4">
+    {{ error }}
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
