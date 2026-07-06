@@ -1,4 +1,4 @@
-import pandas as pd
+import csv
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
@@ -10,79 +10,74 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        df = pd.read_csv("students.csv")
-
-        # Remove spaces from column names
-        df.columns = df.columns.str.strip()
-
         imported = 0
         skipped = 0
 
-        for _, row in df.iterrows():
+        with open("students.csv", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
 
-            try:
-                name = str(row.get("Name", "")).strip()
-                role = str(row.get("Role", "")).strip()
-                internship_id = str(row.get("Internship ID", "")).strip()
-                email = str(row.get("Email", "")).strip()
-                status = str(row.get("Status", "Verified")).strip()
+            # Remove spaces from column names
+            reader.fieldnames = [field.strip() for field in reader.fieldnames]
 
-                # Skip invalid rows
-                if (
-                    name == ""
-                    or internship_id == ""
-                    or internship_id.lower() == "nan"
-                    or name.lower() == "nan"
-                ):
-                    skipped += 1
-                    continue
+            for row in reader:
 
-                # Start Date
-                start_date = row.get("Start Date")
+                row = {k.strip(): (v.strip() if v else "") for k, v in row.items()}
 
-                if pd.isna(start_date):
-                    skipped += 1
-                    continue
+                try:
+                    name = row.get("Name", "")
+                    role = row.get("Role", "")
+                    internship_id = row.get("Internship ID", "")
+                    email = row.get("Email", "")
+                    status = row.get("Status", "Verified")
 
-                start_date = pd.to_datetime(
-                    start_date,
-                    dayfirst=True
-                ).date()
+                    if not name or not internship_id:
+                        skipped += 1
+                        continue
 
-                # End Date
-                end_date = row.get("End Date")
+                    start_date = row.get("Start Date", "")
 
-                if pd.isna(end_date):
-                    end_date = datetime.strptime(
-                        "06-07-2026",
+                    if not start_date:
+                        skipped += 1
+                        continue
+
+                    start_date = datetime.strptime(
+                        start_date,
                         "%d-%m-%Y"
                     ).date()
-                else:
-                    end_date = pd.to_datetime(
-                        end_date,
-                        dayfirst=True
-                    ).date()
 
-                Student.objects.update_or_create(
-                    internship_id=internship_id,
-                    defaults={
-                        "name": name,
-                        "email": email,
-                        "role": role,
-                        "start_date": start_date,
-                        "end_date": end_date,
-                        "status": status if status else "Verified",
-                    },
-                )
+                    end_date = row.get("End Date", "")
 
-                imported += 1
+                    if not end_date:
+                        end_date = datetime.strptime(
+                            "06-07-2026",
+                            "%d-%m-%Y"
+                        ).date()
+                    else:
+                        end_date = datetime.strptime(
+                            end_date,
+                            "%d-%m-%Y"
+                        ).date()
 
-            except Exception as e:
-                skipped += 1
-                print(f"Skipped Row : {e}")
+                    Student.objects.update_or_create(
+                        internship_id=internship_id,
+                        defaults={
+                            "name": name,
+                            "email": email,
+                            "role": role,
+                            "start_date": start_date,
+                            "end_date": end_date,
+                            "status": status if status else "Verified",
+                        },
+                    )
+
+                    imported += 1
+
+                except Exception as e:
+                    skipped += 1
+                    print(f"Skipped Row: {e}")
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"\nImported : {imported}\nSkipped : {skipped}"
+                f"Imported: {imported}\nSkipped: {skipped}"
             )
         )

@@ -1,16 +1,16 @@
-from django.shortcuts import render
-from .models import Student
 from django.shortcuts import render, get_object_or_404
+from .models import Student
+
 
 def home(request):
     student = None
     error = None
 
     if request.method == "POST":
-        certificate_id = request.POST.get("certificate_id")
+        internship_id = request.POST.get("internship_id")
 
         try:
-            student = Student.objects.get(certificate_id=certificate_id)
+            student = Student.objects.get(internship_id=internship_id)
         except Student.DoesNotExist:
             error = "Certificate Not Found"
 
@@ -18,8 +18,8 @@ def home(request):
         "student": student,
         "error": error
     })
-    
-    
+
+
 def verify_certificate(request, internship_id):
     student = get_object_or_404(
         Student,
