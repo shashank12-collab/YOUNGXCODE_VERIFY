@@ -30,8 +30,7 @@ class Student(models.Model):
         return self.name
 
     def generate_qr(self):
-        url = f"http://127.0.0.1:8000/verify/{self.internship_id}/"
-
+        url = f"https://shashankshivam55.pythonanywhere.com/verify/{self.internship_id}/"
         qr = qrcode.make(url)
 
         buffer = BytesIO()

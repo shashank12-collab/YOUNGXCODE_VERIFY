@@ -1,62 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>YoungXcode Certificate Verification</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#f4f7fb;
+        }
+
+        .box{
+            max-width:800px;
+            margin:auto;
+            margin-top:70px;
+            background:white;
+            padding:40px;
+            border-radius:15px;
+            box-shadow:0px 5px 25px rgba(0,0,0,.1);
+        }
+
+        #reader{
+            width:350px;
+            margin:auto;
+            display:none;
+        }
+
+    </style>
+
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
+<div class="container">
 
-    <h1 class="text-primary">YoungXcode</h1>
+<div class="box">
 
-    <h3>Certificate Verification Portal</h3>
+    <center>
 
-    <p>Verify Internship & Training Certificates</p>
+        <h1 class="text-primary fw-bold">
+            YoungXcode
+        </h1>
+
+        <h3>
+            Certificate Verification Portal
+        </h3>
+
+        <p class="text-muted">
+            Verify Internship & Training Certificates
+        </p>
+
+    </center>
 
     <form method="POST">
+
         {% csrf_token %}
 
         <input
             type="text"
             name="internship_id"
-            class="form-control mb-3"
+            class="form-control form-control-lg mb-3"
             placeholder="Enter Internship ID">
 
-        <button class="btn btn-primary">
-            Verify Certificate
-        </button>
+        <div class="text-center">
+
+            <button class="btn btn-primary btn-lg">
+                Verify Certificate
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-success btn-lg"
+                onclick="startScanner()">
+
+                📷 Scan QR
+
+            </button>
+
+        </div>
 
     </form>
 
+    <br>
+
+    <div id="reader"></div>
+
     {% if student %}
 
-    <div class="card mt-4">
+    <div class="card mt-4 shadow">
+
         <div class="card-body">
 
-            <h3 class="text-success">
+            <h2 class="text-success">
+
                 ✅ Certificate Verified
-            </h3>
+
+            </h2>
 
             <hr>
 
-            <p><strong>Name:</strong> {{ student.name }}</p>
+            <h4>{{ student.name }}</h4>
 
-            <p><strong>Internship ID:</strong> {{ student.internship_id }}</p>
+            <p>
 
-            <p><strong>Email:</strong> {{ student.email }}</p>
+                <strong>Internship ID :</strong>
 
-            <p><strong>Role:</strong> {{ student.role }}</p>
+                {{ student.internship_id }}
 
-            <p><strong>Start Date:</strong> {{ student.start_date }}</p>
+            </p>
 
-            <p><strong>End Date:</strong> {{ student.end_date }}</p>
+            <p>
 
-            <p><strong>Status:</strong> {{ student.status }}</p>
+                <strong>Email :</strong>
+
+                {{ student.email }}
+
+            </p>
+
+            <p>
+
+                <strong>Role :</strong>
+
+                {{ student.role }}
+
+            </p>
+
+            <p>
+
+                <strong>Start Date :</strong>
+
+                {{ student.start_date }}
+
+            </p>
+
+            <p>
+
+                <strong>End Date :</strong>
+
+                {{ student.end_date }}
+
+            </p>
+
+            <p>
+
+                <strong>Status :</strong>
+
+                <span class="badge bg-success">
+
+                    {{ student.status }}
+
+                </span>
+
+            </p>
 
         </div>
+
     </div>
 
     {% endif %}
@@ -64,12 +167,53 @@
     {% if error %}
 
     <div class="alert alert-danger mt-4">
+
         {{ error }}
+
     </div>
 
     {% endif %}
 
 </div>
+
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+
+function startScanner(){
+
+    document.getElementById("reader").style.display="block";
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.start(
+
+        { facingMode: "environment" },
+
+        {
+            fps:10,
+            qrbox:250
+        },
+
+        function(decodedText){
+
+            html5QrCode.stop();
+
+            window.location.href=decodedText;
+
+        },
+
+        function(error){
+
+        }
+
+    );
+
+}
+
+</script>
 
 </body>
 </html>
